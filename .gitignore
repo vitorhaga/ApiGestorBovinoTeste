@@ -632,3 +632,7 @@ FodyWeavers.xsd
 /Integracao/PipeDrive/obj/project.assets.json
 /Integracao/PipeDrive/obj/Debug/net6.0/PipeDrive.GeneratedMSBuildEditorConfig.editorconfig
 /Integracao/DDServFinanceiro/obj/Release/net6.0/DDServFinanceiro.AssemblyInfo.cs
+*.v2
+.vs/ApiGestorBovino/v17/.suo
+*.bin
+*.bin
