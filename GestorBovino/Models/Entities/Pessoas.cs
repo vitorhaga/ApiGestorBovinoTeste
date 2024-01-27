@@ -1,26 +1,29 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using ApiGestorBovino.GestorBovino.Models.Dtos.Requests;
+using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApiGestorBovino.GestorBovino.Models.Entities
 {
     public class Pessoas
     {
-        public int Codigo { get; set; }
-        public DateTime? DataInclusao {  get; set; }
-        public DateTime? DataAlteracao { get; set; }
-        public DateTime? DataExclusao { get; set; }
-        public string Nome { get; set; }
-        public string? Cpf { get; set; }
-        public string? Cnpj { get; set; }
-        public string? Telefone { get; set; }
-
-        public Pessoas(string nome, string? cpf, string? cnpj, string? telefone)
+        [Column("codigo"),Key] public Guid Codigo { get; set; }
+        [Column("data_inclusao")]public DateTime? DataInclusao {  get; set; }
+        [Column("data_alteracao")] public DateTime? DataAlteracao { get; set; }
+        [Column("data_exclusao")] public DateTime? DataExclusao { get; set; }
+        [Column("nome")] public string? Nome { get; set; }
+        [Column("cpf")] public string? Cpf { get; set; }
+        [Column("cnpj")] public string? Cnpj { get; set; }
+        [Column("telefone")] public string? Telefone { get; set; }
+        public Pessoas(){}
+        public Pessoas(PessoasReq pessoa)
         {
             DataInclusao = DateTime.Now;
             DataAlteracao = DateTime.Now;
-            Nome = nome;
-            Cpf = cpf;
-            Cnpj = cnpj;
-            Telefone = telefone;
+            Nome = pessoa.Nome!;
+            Cpf = pessoa.Cpf;
+            Cnpj = pessoa.Cnpj;
+            Telefone = pessoa.Telefone;
         }
     }
 }
