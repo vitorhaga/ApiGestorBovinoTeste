@@ -413,10 +413,11 @@ FodyWeavers.xsd
 # Blog
 # About
 *.v2
-.vs/ApiGestorBovino/v17/.suo
+*.suo
 *.bin
 *.vsidx
 *.bin
+*.bin/Debug
 *.exe
 *.pdb
 *.manifest
