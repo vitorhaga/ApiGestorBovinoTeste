@@ -1,10 +1,8 @@
-﻿
+﻿using ApiGestorBovino.GestorBovino.Business;
+using ApiGestorBovino.GestorBovino.Handlers;
 using ApiGestorBovino.GestorBovino.Models.Dtos.Requests;
 using ApiGestorBovino.GestorBovino.Models.Entities;
 using ApiGestorBovino.Models.DB;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System;
 
 namespace ApiGestorBovino.GestorBovinoEndPoints.EndPoints
 {
@@ -15,36 +13,51 @@ namespace ApiGestorBovino.GestorBovinoEndPoints.EndPoints
         {
             var endPointPersons = app.MapGroup(prefix:"persons");
 
-            endPointPersons.MapPost(pattern: "", handler: async (PessoasReq request, DbContextBusiness context) =>
+            endPointPersons.MapPost(pattern: "", handler: async (PessoasReq request) =>
             {
-                if (request != null)
+                if (request.IsValidObject() && request.Nome!.IsValidString())
                 {
-                    bool exists = false;
-                    if (!request.Cnpj.IsNullOrEmpty())
+                    try
                     {
-                        exists = await context.Pessoas.AnyAsync(person => person.Cnpj == request.Cnpj);
+                        var newPerson = new Pessoas(request);
+                        return await new PessoasBusiness().CreatePerson(newPerson);
                     }
-                    else if (!request.Cpf.IsNullOrEmpty())
+                    catch (Exception ex)
                     {
-                        exists = await context.Pessoas.AnyAsync(person => person.Cpf == request.Cpf);
+                        return Results.BadRequest(ex.Message);
                     }
-                    else
-                    {
-                        exists = await context.Pessoas.AnyAsync(person => person.Nome == request.Nome);
-                    }
-                    if(exists)
-                        return Results.Conflict("Esta pessoa já existe!");
-                    //Criar a camada de business para fazer este processo
-                    var newPerson = new Pessoas(request);
-                    await context.Pessoas.AddAsync(newPerson);
-                    await context.SaveChangesAsync();
-                    // retornar o que a camada de business devolver!!
-                    return Results.Ok(newPerson);
                 }
                 else
                 {
-                    return Results.BadRequest();
+                    return Results.BadRequest("Dados Incompletos!");
                 }
+            });
+
+            endPointPersons.MapPut(pattern: "", handler: async (PessoasReq request) =>
+            {
+                if (request.IsValidObject() && request.Nome!.IsValidString())
+                {
+                    try
+                    {
+                        var newPerson = new Pessoas(request);
+                        return await new PessoasBusiness().UpdatePerson(newPerson);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Results.BadRequest(ex.Message);
+                    }
+                }
+                else
+                {
+                    return Results.BadRequest("Dados Incompletos!");
+                }
+            });
+
+            endPointPersons.MapGet(pattern: "", handler: async() =>
+            {
+                var AllPersons = await new Pessoas().GetAllPersons();
+
+                return AllPersons;
             });
         }
         #endregion
